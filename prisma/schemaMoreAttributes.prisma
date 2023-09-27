@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(uuid())
+  name  String
+  age   Int
+  posts Post[]
+
+  @@unique([name, age]) // constraint, unique name and age combination necessary
+}
+
+model Post {
+  title     String
+  text      String
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+
+  @@id([title, authorId]) // compound primary key
+  @@index([createdAt]) // indexing on time of creation
+}

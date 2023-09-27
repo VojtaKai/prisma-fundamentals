@@ -11,25 +11,13 @@ datasource db {
 }
 
 model User {
-  id             Int             @id @default(autoincrement()) // id String @id @default(uuid())
-  name           String
-  age            Int
-  email          String          @unique
-  isAdmin        Boolean
-  role           Role            @default(REGULAR)
-  userPreference UserPreference?
-  writtenPosts   Post[]          @relation("WrittenPosts")
-  favoritePosts  Post[]          @relation("FavoritePosts")
-
-  @@unique([name, age])
-}
-
-model UserPreference {
-  id           String  @id @default(uuid())
-  emailUpdates Boolean
-  preferences  Json
-  user         User    @relation(fields: [userId], references: [id])
-  userId       Int     @unique
+  id            Int     @id @default(autoincrement()) // id String @id @default(uuid())
+  name          String
+  email         String  @unique
+  isAdmin       Boolean
+  preferences   Json?
+  writtenPosts  Post[]  @relation("WrittenPosts")
+  favoritePosts Post[]  @relation("FavoritePosts")
 }
 
 model Post {
@@ -46,11 +34,6 @@ model Post {
 
 model Category {
   id    String @id @default(uuid())
-  name  String
+  name  String @unique
   posts Post[]
-}
-
-enum Role {
-  REGULAR
-  ADMIN
 }

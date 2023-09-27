@@ -3,7 +3,8 @@ const prisma = new PrismaClient()
 
 enum PrismaAction {
     'CREATE' = 1,
-    'READ' = 2
+    'READ' = 2,
+    'DELETE' = 3
 }
 
 async function main(action: PrismaAction) {
@@ -11,12 +12,17 @@ async function main(action: PrismaAction) {
         case PrismaAction.CREATE:
             return await prisma.user.create({
                 data: {
-                    name: 'Vojta'
+                    name: 'Vojta',
+                    age: 28,
+                    email: "vojta@gmail.com",
+                    isAdmin: true
                 }
             })
         case PrismaAction.READ:
             return await prisma.user.findMany()
+        case PrismaAction.DELETE:
+            return await prisma.user.deleteMany()
     }
 }
 
-main(PrismaAction.READ).then((resp) => console.log('success', resp)).catch(err => console.log('error', err)).finally(() => prisma.$disconnect())
+main(PrismaAction.DELETE).then((resp) => console.log('success', resp)).catch(err => console.log('error', err)).finally(() => prisma.$disconnect())

@@ -13,15 +13,11 @@ datasource db {
 model User {
   id             Int             @id @default(autoincrement()) // id String @id @default(uuid())
   name           String
-  age            Int
   email          String          @unique
   isAdmin        Boolean
-  role           Role            @default(REGULAR)
   userPreference UserPreference?
   writtenPosts   Post[]          @relation("WrittenPosts")
   favoritePosts  Post[]          @relation("FavoritePosts")
-
-  @@unique([name, age])
 }
 
 model UserPreference {
@@ -48,9 +44,4 @@ model Category {
   id    String @id @default(uuid())
   name  String
   posts Post[]
-}
-
-enum Role {
-  REGULAR
-  ADMIN
 }
