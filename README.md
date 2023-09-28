@@ -13,4 +13,5 @@ In this project I am working with PostgreSQL ORDBMS
 - npx prisma migrate dev --name init // init is a name of the folder where the migration 
 ## generate new Prisma client from prisma.schema
 - npx prisma generate
-
+## drop records, tbls, db, recreate, reapply migrations/data
+- npx prisma migrate reset

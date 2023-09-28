@@ -15,7 +15,6 @@ model User {
   name           String
   age            Int
   email          String          @unique
-  isAdmin        Boolean
   role           Role            @default(REGULAR)
   userPreference UserPreference?
   writtenPosts   Post[]          @relation("WrittenPosts")
@@ -34,6 +33,7 @@ model UserPreference {
 
 model Post {
   id            String     @id @default(uuid())
+  title         String
   text          String
   createdAt     DateTime
   updatedAt     DateTime
