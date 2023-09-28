@@ -10,7 +10,9 @@ enum PrismaAction {
     'FIND_UNIQUE_2',
     'FIND_FIRST',
     'FIND_MANY',
-    'FIND_MANY_2'
+    'FIND_MANY_2',
+    'FIND_MANY_3',
+    'FIND_MANY_4'
 }
 
 async function main(action: PrismaAction) {
@@ -220,11 +222,11 @@ async function main(action: PrismaAction) {
                 //         },
                 //     ]
                 // },
-                where: {
-                    NOT: {
-                        email: { endsWith: '@gmail.com' }
-                    }
-                },
+                // where: {
+                //     NOT: {
+                //         email: { endsWith: '@gmail.com' }
+                //     }
+                // },
                 distinct: ["name", "age"],
                 // take: 2, // pagination
                 // skip: 1, // will skip first N-count
@@ -233,7 +235,98 @@ async function main(action: PrismaAction) {
                     age: 'desc'
                 }
             })
+        case PrismaAction.FIND_MANY_3:
+            // delete everything
+            await prisma.userPreference.deleteMany()
+            await prisma.post.deleteMany()
+            await prisma.user.deleteMany()
+
+            // create new user
+            await main(PrismaAction.CREATE)
+            await prisma.user.createMany({
+                data: [
+                    {
+                        name: 'Vojta',
+                        age: 29,
+                        email: "vojta29@gmail.com",
+                    },
+                    {
+                        name: 'Vojta',
+                        age: 40,
+                        email: "vojta40@gmail.com",
+                    },
+                    {
+                        name: 'Vojta',
+                        age: 13,
+                        email: "vojta13@gmail.com",
+                    }
+                ]
+            })
+
+            return await prisma.user.findMany({
+                where: {
+                    userPreference: {
+                        AND: [
+                            {
+                                emailUpdates: true,
+                                preferences: {
+                                    path: ['foods'],
+                                    array_contains: ['healthy foods', 'pizza']
+                                }
+                            }
+                        ],
+                    },
+                    favoritePosts: {
+                        every: { // none, every or some will always return when favoritePosts is an empty array
+                            text: {
+                                contains: 'BLE-BLE-BLE'
+                            }
+                        }
+                    }
+                },
+                include: {
+                    userPreference: true
+                }
+            })
+        case PrismaAction.FIND_MANY_4:
+            // delete everything
+            await prisma.userPreference.deleteMany()
+            await prisma.post.deleteMany()
+            await prisma.user.deleteMany()
+
+            // create new user
+            await main(PrismaAction.CREATE)
+            await prisma.user.createMany({
+                data: [
+                    {
+                        name: 'Vojta',
+                        age: 29,
+                        email: "vojta29@gmail.com",
+                    },
+                    {
+                        name: 'Vojta',
+                        age: 40,
+                        email: "vojta40@gmail.com",
+                    },
+                    {
+                        name: 'Vojta',
+                        age: 13,
+                        email: "vojta13@gmail.com",
+                    }
+                ]
+            })
+
+            return await prisma.post.findMany({
+                where: {
+                    author: {
+                        age: { gt: 20 },
+                        name: {
+                            startsWith: 'V'
+                        }
+                    }
+                }
+            })
     }
 }
 
-main(PrismaAction.FIND_MANY_2).then((resp) => console.log('success', resp)).catch(err => console.log('error', err)).finally(() => prisma.$disconnect())
+main(PrismaAction.FIND_MANY_4).then((resp) => console.log('success', resp)).catch(err => console.log('error', err)).finally(() => prisma.$disconnect())
