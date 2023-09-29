@@ -15,3 +15,6 @@ In this project I am working with PostgreSQL ORDBMS
 - npx prisma generate
 ## drop records, tbls, db, recreate, reapply migrations/data
 - npx prisma migrate reset
+
+# Prisma CRUD
+https://www.prisma.io/docs/concepts/components/prisma-client/crud
